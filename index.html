@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>رفيق الدراسة – مساحة عمل مشتركة</title>
+  <!-- Google Fonts: Cairo (عربية حديثة) -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome 6 (مجاني) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f0f9ff 0%, #e6f0fa 100%);
+      font-family: 'Cairo', sans-serif;
+      padding: 1.5rem;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* بطاقة الترحيب والرأس */
+    .hero {
+      background: rgba(255,255,255,0.7);
+      backdrop-filter: blur(12px);
+      border-radius: 48px;
+      padding: 1.5rem 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
+      border: 1px solid rgba(255,255,255,0.5);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .title h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1E3A8A, #3B82F6);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .badge {
+      background: #10b981;
+      color: white;
+      padding: 6px 18px;
+      border-radius: 40px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .live-dot {
+      width: 10px;
+      height: 10px;
+      background: #2ecc71;
+      border-radius: 50%;
+      display: inline-block;
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 0.4; transform: scale(0.8);}
+      100% { opacity: 1; transform: scale(1.2);}
+    }
+    .sub {
+      color: #2c3e66;
+      margin-top: 8px;
+      font-weight: 500;
+    }
+
+    /* شبكة الميزات الرئيسية */
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 1.8rem;
+      margin-bottom: 2rem;
+    }
+
+    .card {
+      background: white;
+      border-radius: 2rem;
+      padding: 1.4rem 1.6rem;
+      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.08);
+      transition: all 0.25s ease;
+      border: 1px solid rgba(0,0,0,0.05);
+    }
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 28px 40px -16px rgba(0,0,0,0.15);
+    }
+    .card h2 {
+      font-size: 1.6rem;
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-right: 4px solid #3b82f6;
+      padding-right: 14px;
+      color: #0f172a;
+    }
+
+    /* منطقة النوت */
+    .notes-area {
+      width: 100%;
+      border: 1px solid #e2e8f0;
+      border-radius: 24px;
+      padding: 16px;
+      font-family: 'Cairo', monospace;
+      font-size: 1rem;
+      background: #fefce8;
+      resize: vertical;
+      transition: 0.2s;
+    }
+    .notes-area:focus {
+      border-color: #3b82f6;
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+    }
+
+    /* قائمة المهام */
+    .task-input-group, .link-input-group {
+      display: flex;
+      gap: 12px;
+      margin: 16px 0;
+    }
+    .task-input-group input, .link-input-group input {
+      flex: 1;
+      padding: 12px 18px;
+      border-radius: 60px;
+      border: 1px solid #cbd5e1;
+      font-family: 'Cairo', sans-serif;
+      font-size: 0.95rem;
+    }
+    button {
+      background: #3b82f6;
+      border: none;
+      color: white;
+      padding: 0 24px;
+      border-radius: 60px;
+      font-weight: 600;
+      font-family: 'Cairo', sans-serif;
+      cursor: pointer;
+      transition: 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    button:hover {
+      background: #2563eb;
+      transform: scale(0.96);
+    }
+    .task-list, .links-list {
+      list-style: none;
+      max-height: 280px;
+      overflow-y: auto;
+      margin-top: 12px;
+    }
+    .task-item, .link-item {
+      background: #f8fafc;
+      margin: 10px 0;
+      padding: 10px 16px;
+      border-radius: 60px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border: 1px solid #e2e8f0;
+    }
+    .task-text {
+      flex: 1;
+      font-size: 1rem;
+    }
+    .task-text.completed {
+      text-decoration: line-through;
+      color: #94a3b8;
+    }
+    .delete-btn {
+      background: #ef4444;
+      padding: 6px 14px;
+      border-radius: 40px;
+      font-size: 0.75rem;
+    }
+    .link-url {
+      flex: 1;
+      font-size: 0.9rem;
+      direction: ltr;
+      text-align: left;
+    }
+    .link-url a {
+      text-decoration: none;
+      color: #2563eb;
+      font-weight: 500;
+    }
+    /* الموقت المحلي (إضافة إبداعية) */
+    .timer-card {
+      background: linear-gradient(120deg, #1e293b, #0f172a);
+      color: white;
+    }
+    .timer-card h2 i {
+      color: #facc15;
+    }
+    .timer-display {
+      font-size: 3rem;
+      font-weight: 800;
+      font-family: monospace;
+      text-align: center;
+      margin: 20px 0;
+      letter-spacing: 5px;
+    }
+    .timer-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+    }
+    .timer-btn {
+      background: #334155;
+      padding: 8px 18px;
+    }
+    .timer-btn.primary {
+      background: #facc15;
+      color: #0f172a;
+    }
+    .status-text {
+      text-align: center;
+      font-size: 0.85rem;
+      margin-top: 12px;
+      opacity: 0.8;
+    }
+    footer {
+      text-align: center;
+      margin-top: 3rem;
+      padding: 1rem;
+      font-size: 0.85rem;
+      border-top: 1px solid rgba(0,0,0,0.05);
+      color: #475569;
+    }
+    @media (max-width: 700px) {
+      body { padding: 1rem; }
+      .hero { flex-direction: column; text-align: center; gap: 12px; }
+      .title h1 { font-size: 1.7rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="hero">
+    <div class="title">
+      <h1><i class="fas fa-user-graduate"></i> رفيق الدراسة</h1>
+      <div class="sub">مساحة تعاونية لحظة بلحظة – أنت وصديقك معاً</div>
+    </div>
+    <div class="badge"><span class="live-dot"></span> مباشر | تحديث فوري</div>
+  </div>
+
+  <div class="dashboard">
+    <!-- بطاقة الملاحظات المشتركة -->
+    <div class="card">
+      <h2><i class="fas fa-pen-fancy"></i> ملاحظات مشتركة</h2>
+      <textarea id="sharedNotes" class="notes-area" rows="6" placeholder="اكتبا الملاحظات معاً... أي تغيير يظهر للطرف الآخر فوراً 📝"></textarea>
+      <div class="status-text"><i class="fas fa-sync-alt"></i> حفظ تلقائي لحظي</div>
+    </div>
+
+    <!-- بطاقة المهام الدراسية -->
+    <div class="card">
+      <h2><i class="fas fa-check-circle"></i> قائمة المهام</h2>
+      <div class="task-input-group">
+        <input type="text" id="taskInput" placeholder="مثال: مراجعة الفصل الرابع، حل تمرين الرياضيات...">
+        <button id="addTaskBtn"><i class="fas fa-plus"></i> أضف</button>
+      </div>
+      <ul id="taskList" class="task-list"></ul>
+    </div>
+
+    <!-- بطاقة الروابط المفيدة (ميزة إضافية تعاونية) -->
+    <div class="card">
+      <h2><i class="fas fa-link"></i> روابط تعاونية</h2>
+      <div class="link-input-group">
+        <input type="text" id="linkTitle" placeholder="العنوان (مثل: دروس يوتيوب)">
+        <input type="url" id="linkUrl" placeholder="الرابط https://...">
+        <button id="addLinkBtn"><i class="fas fa-save"></i> حفظ</button>
+      </div>
+      <ul id="linksList" class="links-list"></ul>
+    </div>
+
+    <!-- مؤقت بومودورو إضافي (غير متزامن لكن مفيد) -->
+    <div class="card timer-card">
+      <h2><i class="fas fa-hourglass-half"></i> مؤقت المذاكرة</h2>
+      <div class="timer-display" id="timerDisplay">25:00</div>
+      <div class="timer-buttons">
+        <button class="timer-btn" id="startTimer"><i class="fas fa-play"></i> ابدأ</button>
+        <button class="timer-btn" id="pauseTimer"><i class="fas fa-pause"></i> إيقاف</button>
+        <button class="timer-btn" id="resetTimer"><i class="fas fa-undo-alt"></i> إعادة</button>
+      </div>
+      <div class="status-text">⏱️ جلسة تركيز 25 دقيقة – ركّز ثم استرح</div>
+    </div>
+  </div>
+
+  <footer>
+    <i class="fas fa-code"></i> Direct By Momen Aboud | 
+    <i class="fas fa-cloud-upload-alt"></i> متزامن مع Firebase Firestore – شارك الرابط مع صديقك
+  </footer>
+</div>
+
+<!-- Firebase SDK (مودرن) -->
+<script type="module">
+  // =================== قم باستبدال هذه البيانات ببيانات مشروعك من Firebase ===================
+  const firebaseConfig = {
+    apiKey: "AIzaSyDummyReplaceWithYourActualKey",
+    authDomain: "studybuddy-552bf.firebaseapp.com",
+    projectId: "studybuddy-552bf",
+    storageBucket: "studybuddy-552bf.appspot.com",
+    messagingSenderId: "123456789012",
+    appId: "1:123456789012:web:abc123def456"
+  };
+  // ======================================================================================
+
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+  import { getFirestore, doc, onSnapshot, updateDoc, arrayUnion, arrayRemove, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  const studyDocRef = doc(db, "studySessions", "buddyRoom");
+
+  // عناصر DOM
+  const notesTextarea = document.getElementById("sharedNotes");
+  const taskInput = document.getElementById("taskInput");
+  const addTaskBtn = document.getElementById("addTaskBtn");
+  const taskListUl = document.getElementById("taskList");
+  const linkTitleInput = document.getElementById("linkTitle");
+  const linkUrlInput = document.getElementById("linkUrl");
+  const addLinkBtn = document.getElementById("addLinkBtn");
+  const linksListUl = document.getElementById("linksList");
+
+  let localUpdating = false;
+  let notesTimeout;
+
+  // ---- استماع حي من Firestore ----
+  onSnapshot(studyDocRef, async (docSnap) => {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      // تحديث الملاحظات
+      const remoteNotes = data.notes || "";
+      if (!localUpdating && notesTextarea.value !== remoteNotes) {
+        notesTextarea.value = remoteNotes;
+      }
+      // عرض المهام
+      const tasks = data.tasks || [];
+      renderTasks(tasks);
+      // عرض الروابط
+      const links = data.links || [];
+      renderLinks(links);
+    } else {
+      // إنشاء المستند لأول مرة
+      await setDoc(studyDocRef, {
+        notes: "🌟 مرحباً بكما في مساحة المذاكرة!\nاكتبا ملاحظاتكما معاً، وأضيفا مهام وروابط.",
+        tasks: [],
+        links: []
+      });
+    }
+  });
+
+  // حفظ الملاحظات عند الكتابة (debounce)
+  notesTextarea.addEventListener("input", (e) => {
+    clearTimeout(notesTimeout);
+    notesTimeout = setTimeout(async () => {
+      localUpdating = true;
+      try {
+        await updateDoc(studyDocRef, { notes: e.target.value });
+      } catch(err) { console.warn(err); }
+      localUpdating = false;
+    }, 500);
+  });
+
+  // --- دوال المهام ---
+  async function addTask(text) {
+    if (!text.trim()) return;
+    const newTask = { id: Date.now(), text: text.trim(), done: false };
+    await updateDoc(studyDocRef, { tasks: arrayUnion(newTask) });
+  }
+  async function toggleTask(taskId, currentDone) {
+    const snap = await getDoc(studyDocRef);
+    if (snap.exists()) {
+      let tasks = snap.data().tasks || [];
+      const updated = tasks.map(t => t.id === taskId ? { ...t, done: !t.done } : t);
+      await updateDoc(studyDocRef, { tasks: updated });
+    }
+  }
+  async function deleteTask(taskId) {
+    const snap = await getDoc(studyDocRef);
+    if (snap.exists()) {
+      let tasks = snap.data().tasks || [];
+      const filtered = tasks.filter(t => t.id !== taskId);
+      await updateDoc(studyDocRef, { tasks: filtered });
+    }
+  }
+  function renderTasks(tasks) {
+    taskListUl.innerHTML = "";
+    if (!tasks.length) {
+      taskListUl.innerHTML = '<div style="text-align:center; color:gray; padding:20px;">✨ لا مهام حالياً، أضف مهمة جديدة</div>';
+      return;
+    }
+    tasks.forEach(task => {
+      const li = document.createElement("li");
+      li.className = "task-item";
+      const checkSpan = document.createElement("span");
+      checkSpan.innerHTML = task.done ? "✅" : "◻️";
+      checkSpan.style.cursor = "pointer";
+      checkSpan.style.fontSize = "1.4rem";
+      checkSpan.onclick = () => toggleTask(task.id, task.done);
+      const textSpan = document.createElement("span");
+      textSpan.className = `task-text ${task.done ? "completed" : ""}`;
+      textSpan.textContent = task.text;
+      const delBtn = document.createElement("button");
+      delBtn.innerHTML = "<i class='fas fa-trash-alt'></i>";
+      delBtn.className = "delete-btn";
+      delBtn.onclick = () => deleteTask(task.id);
+      li.appendChild(checkSpan);
+      li.appendChild(textSpan);
+      li.appendChild(delBtn);
+      taskListUl.appendChild(li);
+    });
+  }
+  addTaskBtn.addEventListener("click", () => {
+    addTask(taskInput.value);
+    taskInput.value = "";
+  });
+  taskInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") addTask(taskInput.value), taskInput.value = "";
+  });
+
+  // --- دوال الروابط التعاونية ---
+  async function addLink(title, url) {
+    if (!title.trim() || !url.trim()) return;
+    const newLink = { id: Date.now(), title: title.trim(), url: url.trim() };
+    await updateDoc(studyDocRef, { links: arrayUnion(newLink) });
+  }
+  async function deleteLink(linkId) {
+    const snap = await getDoc(studyDocRef);
+    if (snap.exists()) {
+      let links = snap.data().links || [];
+      const filtered = links.filter(l => l.id !== linkId);
+      await updateDoc(studyDocRef, { links: filtered });
+    }
+  }
+  function renderLinks(links) {
+    linksListUl.innerHTML = "";
+    if (!links.length) {
+      linksListUl.innerHTML = '<div style="text-align:center; color:gray; padding:20px;">🔗 لا روابط حالياً، أضف رابطاً مفيداً</div>';
+      return;
+    }
+    links.forEach(link => {
+      const li = document.createElement("li");
+      li.className = "link-item";
+      const infoDiv = document.createElement("div");
+      infoDiv.className = "link-url";
+      infoDiv.innerHTML = `<strong>${escapeHtml(link.title)}</strong><br><a href="${link.url}" target="_blank">${link.url.substring(0, 50)}${link.url.length>50 ? '...' : ''}</a>`;
+      const delBtn = document.createElement("button");
+      delBtn.innerHTML = "<i class='fas fa-times'></i>";
+      delBtn.className = "delete-btn";
+      delBtn.onclick = () => deleteLink(link.id);
+      li.appendChild(infoDiv);
+      li.appendChild(delBtn);
+      linksListUl.appendChild(li);
+    });
+  }
+  function escapeHtml(str) {
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
+  }
+  addLinkBtn.addEventListener("click", () => {
+    addLink(linkTitleInput.value, linkUrlInput.value);
+    linkTitleInput.value = "";
+    linkUrlInput.value = "";
+  });
+
+  // =============== مؤقت بومودورو (إضافة محلية رائعة) ===============
+  let timerInterval;
+  let timeLeft = 25 * 60; // 25 دقيقة بالثواني
+  let isRunning = false;
+  const timerDisplay = document.getElementById("timerDisplay");
+  function updateTimerUI() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    timerDisplay.textContent = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
+  }
+  function startTimer() {
+    if (isRunning) return;
+    isRunning = true;
+    timerInterval = setInterval(() => {
+      if (timeLeft <= 0) {
+        clearInterval(timerInterval);
+        isRunning = false;
+        alert("⏰ انتهت جلسة المذاكرة! حان وقت استراحة قصيرة.");
+        timeLeft = 25 * 60;
+        updateTimerUI();
+      } else {
+        timeLeft--;
+        updateTimerUI();
+      }
+    }, 1000);
+  }
+  function pauseTimer() {
+    clearInterval(timerInterval);
+    isRunning = false;
+  }
+  function resetTimer() {
+    pauseTimer();
+    timeLeft = 25 * 60;
+    updateTimerUI();
+  }
+  document.getElementById("startTimer").addEventListener("click", startTimer);
+  document.getElementById("pauseTimer").addEventListener("click", pauseTimer);
+  document.getElementById("resetTimer").addEventListener("click", resetTimer);
+  updateTimerUI();
+</script>
+</body>
+</html>
