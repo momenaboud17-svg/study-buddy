@@ -3,530 +3,734 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>رفيق الدراسة – مساحة عمل مشتركة</title>
-  <!-- Google Fonts: Cairo (عربية حديثة) -->
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <!-- Font Awesome 6 (مجاني) -->
+  <title>رفيق الدراسة ULTRA – الإصدار النهائي | غرف متطورة + شات + ملفات + ثلاثي الأبعاد</title>
+  <!-- Google Fonts + Font Awesome + Quill (محرر نصوص غني) -->
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+  <!-- Three.js لخلفية ثلاثية الأبعاد خفيفة -->
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.128.0/build/three.module.js"
+      }
+    }
+  </script>
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
-
     body {
-      background: linear-gradient(145deg, #f0f9ff 0%, #e6f0fa 100%);
       font-family: 'Cairo', sans-serif;
-      padding: 1.5rem;
-      min-height: 100vh;
+      background: radial-gradient(circle at 20% 30%, #0a0f2a, #03050b);
+      color: #f1f5f9;
+      overflow-x: hidden;
+      transition: background 0.3s;
     }
-
+    body.light {
+      background: radial-gradient(circle at 20% 30%, #e2e8f0, #cbd5e1);
+      color: #0f172a;
+    }
+    /* حاوية الخلفية ثلاثية الأبعاد */
+    #three-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
     .container {
-      max-width: 1400px;
+      position: relative;
+      z-index: 10;
+      max-width: 1600px;
       margin: 0 auto;
+      padding: 1rem;
     }
-
-    /* بطاقة الترحيب والرأس */
-    .hero {
-      background: rgba(255,255,255,0.7);
+    /* تصميم الزجاج المتطور */
+    .glass {
+      background: rgba(15, 25, 45, 0.55);
       backdrop-filter: blur(12px);
-      border-radius: 48px;
-      padding: 1.5rem 2rem;
-      margin-bottom: 2rem;
-      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.1);
-      border: 1px solid rgba(255,255,255,0.5);
+      border-radius: 2rem;
+      border: 1px solid rgba(255,255,255,0.2);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+    body.light .glass {
+      background: rgba(255,255,255,0.7);
+      border-color: rgba(255,255,255,0.8);
+      box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    }
+    .hero {
       display: flex;
-      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      padding: 1rem 2rem;
+      margin-bottom: 2rem;
+      gap: 1rem;
     }
     .title h1 {
-      font-size: 2.2rem;
+      font-size: 2rem;
       font-weight: 800;
-      background: linear-gradient(135deg, #1E3A8A, #3B82F6);
+      background: linear-gradient(135deg, #a5f3fc, #38bdf8, #818cf8);
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
     }
     .badge {
       background: #10b981;
-      color: white;
-      padding: 6px 18px;
-      border-radius: 40px;
+      padding: 0.4rem 1.2rem;
+      border-radius: 2rem;
       font-size: 0.8rem;
-      font-weight: 600;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
     }
-    .live-dot {
-      width: 10px;
-      height: 10px;
-      background: #2ecc71;
-      border-radius: 50%;
-      display: inline-block;
-      animation: pulse 1.5s infinite;
-    }
-    @keyframes pulse {
-      0% { opacity: 0.4; transform: scale(0.8);}
-      100% { opacity: 1; transform: scale(1.2);}
-    }
-    .sub {
-      color: #2c3e66;
-      margin-top: 8px;
-      font-weight: 500;
-    }
-
-    /* شبكة الميزات الرئيسية */
     .dashboard {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
       gap: 1.8rem;
-      margin-bottom: 2rem;
     }
-
     .card {
-      background: white;
-      border-radius: 2rem;
-      padding: 1.4rem 1.6rem;
-      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.08);
-      transition: all 0.25s ease;
-      border: 1px solid rgba(0,0,0,0.05);
+      background: rgba(10, 20, 35, 0.5);
+      backdrop-filter: blur(8px);
+      border-radius: 1.8rem;
+      padding: 1.4rem;
+      transition: transform 0.2s, box-shadow 0.2s;
+      border: 1px solid rgba(255,255,255,0.1);
     }
     .card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 28px 40px -16px rgba(0,0,0,0.15);
+      transform: translateY(-6px);
+      box-shadow: 0 20px 35px -12px rgba(0,0,0,0.4);
+    }
+    body.light .card {
+      background: rgba(255,255,255,0.6);
     }
     .card h2 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      margin-bottom: 1.2rem;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
       display: flex;
       align-items: center;
-      gap: 10px;
-      border-right: 4px solid #3b82f6;
-      padding-right: 14px;
+      gap: 0.7rem;
+      border-right: 4px solid #38bdf8;
+      padding-right: 1rem;
+    }
+    /* محرر النصوص الغني Quill */
+    #quill-editor {
+      height: 200px;
+      background: rgba(255,255,255,0.9);
       color: #0f172a;
+      border-radius: 1rem;
+      margin-bottom: 1rem;
     }
-
-    /* منطقة النوت */
-    .notes-area {
-      width: 100%;
-      border: 1px solid #e2e8f0;
-      border-radius: 24px;
-      padding: 16px;
-      font-family: 'Cairo', monospace;
-      font-size: 1rem;
-      background: #fefce8;
-      resize: vertical;
-      transition: 0.2s;
+    body.light #quill-editor {
+      background: white;
     }
-    .notes-area:focus {
-      border-color: #3b82f6;
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(59,130,246,0.2);
+    /* شات */
+    .chat-container {
+      max-height: 250px;
+      overflow-y: auto;
+      margin-bottom: 0.8rem;
+      background: rgba(0,0,0,0.3);
+      border-radius: 1rem;
+      padding: 0.5rem;
     }
-
-    /* قائمة المهام */
-    .task-input-group, .link-input-group {
+    .chat-message {
+      margin: 0.4rem 0;
+      padding: 0.4rem 0.8rem;
+      background: rgba(56, 189, 248, 0.2);
+      border-radius: 1.2rem;
+    }
+    /* ملفات */
+    .file-list {
+      max-height: 180px;
+      overflow-y: auto;
+    }
+    .file-item {
       display: flex;
-      gap: 12px;
-      margin: 16px 0;
-    }
-    .task-input-group input, .link-input-group input {
-      flex: 1;
-      padding: 12px 18px;
-      border-radius: 60px;
-      border: 1px solid #cbd5e1;
-      font-family: 'Cairo', sans-serif;
-      font-size: 0.95rem;
+      justify-content: space-between;
+      background: rgba(0,0,0,0.3);
+      margin: 0.4rem 0;
+      padding: 0.4rem 0.8rem;
+      border-radius: 2rem;
     }
     button {
       background: #3b82f6;
       border: none;
       color: white;
-      padding: 0 24px;
-      border-radius: 60px;
-      font-weight: 600;
-      font-family: 'Cairo', sans-serif;
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
       cursor: pointer;
-      transition: 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
+      font-weight: 600;
+      transition: 0.1s;
     }
-    button:hover {
-      background: #2563eb;
-      transform: scale(0.96);
-    }
-    .task-list, .links-list {
-      list-style: none;
-      max-height: 280px;
-      overflow-y: auto;
-      margin-top: 12px;
-    }
-    .task-item, .link-item {
-      background: #f8fafc;
-      margin: 10px 0;
-      padding: 10px 16px;
-      border-radius: 60px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border: 1px solid #e2e8f0;
-    }
-    .task-text {
-      flex: 1;
-      font-size: 1rem;
-    }
-    .task-text.completed {
-      text-decoration: line-through;
-      color: #94a3b8;
-    }
-    .delete-btn {
-      background: #ef4444;
-      padding: 6px 14px;
-      border-radius: 40px;
-      font-size: 0.75rem;
-    }
-    .link-url {
-      flex: 1;
-      font-size: 0.9rem;
-      direction: ltr;
-      text-align: left;
-    }
-    .link-url a {
-      text-decoration: none;
-      color: #2563eb;
-      font-weight: 500;
-    }
-    /* الموقت المحلي (إضافة إبداعية) */
-    .timer-card {
-      background: linear-gradient(120deg, #1e293b, #0f172a);
-      color: white;
-    }
-    .timer-card h2 i {
-      color: #facc15;
-    }
+    button:hover { transform: scale(0.96); background: #2563eb; }
     .timer-display {
-      font-size: 3rem;
-      font-weight: 800;
+      font-size: 2.5rem;
       font-family: monospace;
       text-align: center;
-      margin: 20px 0;
-      letter-spacing: 5px;
     }
-    .timer-buttons {
+    .leaderboard-item {
       display: flex;
-      gap: 12px;
-      justify-content: center;
+      justify-content: space-between;
+      background: rgba(0,0,0,0.3);
+      margin: 0.4rem 0;
+      padding: 0.5rem 1rem;
+      border-radius: 2rem;
     }
-    .timer-btn {
-      background: #334155;
-      padding: 8px 18px;
-    }
-    .timer-btn.primary {
+    .room-tier {
       background: #facc15;
-      color: #0f172a;
+      color: black;
+      padding: 0.2rem 0.6rem;
+      border-radius: 1rem;
+      font-size: 0.7rem;
     }
-    .status-text {
+    /* شارات الإنجازات */
+    .badge-icon {
+      display: inline-block;
+      background: #f59e0b;
+      border-radius: 50%;
+      width: 32px;
+      height: 32px;
+      line-height: 32px;
       text-align: center;
-      font-size: 0.85rem;
-      margin-top: 12px;
-      opacity: 0.8;
+      margin-left: 0.5rem;
     }
     footer {
       text-align: center;
-      margin-top: 3rem;
-      padding: 1rem;
-      font-size: 0.85rem;
-      border-top: 1px solid rgba(0,0,0,0.05);
-      color: #475569;
+      margin-top: 2rem;
+      opacity: 0.7;
     }
-    @media (max-width: 700px) {
-      body { padding: 1rem; }
-      .hero { flex-direction: column; text-align: center; gap: 12px; }
-      .title h1 { font-size: 1.7rem; }
+    @media (max-width: 800px) {
+      .dashboard { grid-template-columns: 1fr; }
     }
   </style>
 </head>
 <body>
-<div class="container">
-  <div class="hero">
-    <div class="title">
-      <h1><i class="fas fa-user-graduate"></i> رفيق الدراسة</h1>
-      <div class="sub">مساحة تعاونية لحظة بلحظة – أنت وصديقك معاً</div>
+  <canvas id="three-bg"></canvas>
+  <div class="container">
+    <!-- شاشة البهو -->
+    <div id="lobbyScreen">
+      <div class="hero glass">
+        <div class="title">
+          <h1><i class="fas fa-star-of-life"></i> رفيق الدراسة ULTRA</h1>
+          <div>غرف ذكية | شات | ملفات | ثلاثي الأبعاد | شارات</div>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+          <button id="darkModeBtn" style="background:#475569;"><i class="fas fa-moon"></i> الوضع</button>
+          <div class="badge"><span class="live-dot"></span> LIVE</div>
+        </div>
+      </div>
+      <div class="dashboard">
+        <div class="card glass">
+          <h2><i class="fas fa-plus-circle"></i> إنشاء غرفة</h2>
+          <input type="text" id="newRoomName" placeholder="اسم الغرفة" style="width:100%; padding:0.7rem; border-radius:2rem; border:none;">
+          <button id="createRoomBtn" style="margin-top:0.8rem; width:100%;">إنشاء غرفة <i class="fas fa-door-open"></i></button>
+        </div>
+        <div class="card glass">
+          <h2><i class="fas fa-sign-in-alt"></i> انضم إلى غرفة</h2>
+          <input type="text" id="joinRoomId" placeholder="معرف الغرفة" style="width:100%; padding:0.7rem; border-radius:2rem;">
+          <button id="joinRoomBtn" style="margin-top:0.8rem; width:100%;">دخول</button>
+        </div>
+        <div class="card glass">
+          <h2><i class="fas fa-trophy"></i> أفضل الغرف (نقاط)</h2>
+          <div id="leaderboardList">جاري التحميل...</div>
+        </div>
+      </div>
+      <footer>✨ Direct By Momen Aboud – إصدار نهائي متطور ✨</footer>
     </div>
-    <div class="badge"><span class="live-dot"></span> مباشر | تحديث فوري</div>
+
+    <!-- شاشة الغرفة الداخلية -->
+    <div id="roomScreen" style="display: none;">
+      <div class="hero glass">
+        <div class="title">
+          <h1><i class="fas fa-chalkboard-user"></i> غرفة: <span id="roomNameDisplay">---</span> <span id="roomTierDisplay" class="room-tier"></span></h1>
+        </div>
+        <div style="display: flex; gap: 1rem;">
+          <button id="exitRoomBtn" style="background:#ef4444;">خروج <i class="fas fa-sign-out-alt"></i></button>
+        </div>
+      </div>
+      <div class="dashboard">
+        <!-- عمود الملاحظات المتقدمة والشات -->
+        <div class="card glass">
+          <h2><i class="fas fa-edit"></i> ملاحظات غنية (محرر متكامل)</h2>
+          <div id="quill-editor"></div>
+          <h2><i class="fas fa-comments"></i> دردشة فورية</h2>
+          <div id="chatMessages" class="chat-container"></div>
+          <div style="display: flex; gap: 0.5rem;">
+            <input type="text" id="chatInput" placeholder="رسالتك..." style="flex:1; border-radius:2rem; padding:0.5rem;">
+            <button id="sendChatBtn"><i class="fas fa-paper-plane"></i></button>
+          </div>
+          <div class="online-users" style="margin-top:0.5rem;">🟢 المتصلون: <span id="onlineList">-</span></div>
+        </div>
+
+        <!-- عمود المهام والملفات والشارات -->
+        <div class="card glass">
+          <h2><i class="fas fa-tasks"></i> المهام (+10 نقاط)</h2>
+          <div style="display: flex; gap:0.5rem;">
+            <input type="text" id="taskInput" placeholder="مهمة جديدة" style="flex:1;">
+            <button id="addTaskBtn">إضافة</button>
+          </div>
+          <ul id="taskList" style="list-style:none; margin-top:1rem;"></ul>
+          <h2><i class="fas fa-cloud-upload-alt"></i> ملفات الغرفة</h2>
+          <input type="file" id="fileUpload" multiple accept="image/*,application/pdf">
+          <button id="uploadFileBtn" style="margin-top:0.5rem;">رفع</button>
+          <div id="fileList" class="file-list" style="margin-top:0.8rem;"></div>
+          <h2><i class="fas fa-medal"></i> شارات الإنجازات</h2>
+          <div id="badgesList"></div>
+        </div>
+
+        <!-- عمود الروابط الذكية والمؤقت والإحصائيات -->
+        <div class="card glass">
+          <h2><i class="fas fa-link"></i> روابط ذكية</h2>
+          <div style="display: flex; gap:0.5rem; flex-wrap:wrap;">
+            <input type="text" id="linkTitle" placeholder="العنوان" style="flex:1;">
+            <input type="url" id="linkUrl" placeholder="الرابط" style="flex:2;">
+            <button id="addLinkBtn">حفظ</button>
+          </div>
+          <div id="linksList" class="file-list"></div>
+          <div class="timer-card" style="margin-top:1rem; background:rgba(0,0,0,0.3); border-radius:1.5rem; padding:1rem;">
+            <h2><i class="fas fa-hourglass-half"></i> بومودورو</h2>
+            <div class="timer-display" id="timerDisplay">25:00</div>
+            <div style="display:flex; gap:0.5rem; justify-content:center;">
+              <button id="startTimer">ابدأ</button>
+              <button id="pauseTimer">إيقاف</button>
+              <button id="resetTimer">إعادة</button>
+            </div>
+            <div class="status-text" style="font-size:0.8rem;">جلسة كاملة = +50 نقطة</div>
+          </div>
+          <h2><i class="fas fa-chart-line"></i> إحصائيات الغرفة</h2>
+          <div id="roomStats">المهام المكتملة: 0 | النقاط: 0</div>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="dashboard">
-    <!-- بطاقة الملاحظات المشتركة -->
-    <div class="card">
-      <h2><i class="fas fa-pen-fancy"></i> ملاحظات مشتركة</h2>
-      <textarea id="sharedNotes" class="notes-area" rows="6" placeholder="اكتبا الملاحظات معاً... أي تغيير يظهر للطرف الآخر فوراً 📝"></textarea>
-      <div class="status-text"><i class="fas fa-sync-alt"></i> حفظ تلقائي لحظي</div>
-    </div>
+  <script type="module">
+    // ======================== إعدادات Firebase (استبدلها) ========================
+    const firebaseConfig = {
+      apiKey: "AIzaSyDummyReplaceWithYourActualKey",
+      authDomain: "studybuddy-552bf.firebaseapp.com",
+      projectId: "studybuddy-552bf",
+      storageBucket: "studybuddy-552bf.appspot.com",
+      messagingSenderId: "123456789012",
+      appId: "1:123456789012:web:abc123def456"
+    };
 
-    <!-- بطاقة المهام الدراسية -->
-    <div class="card">
-      <h2><i class="fas fa-check-circle"></i> قائمة المهام</h2>
-      <div class="task-input-group">
-        <input type="text" id="taskInput" placeholder="مثال: مراجعة الفصل الرابع، حل تمرين الرياضيات...">
-        <button id="addTaskBtn"><i class="fas fa-plus"></i> أضف</button>
-      </div>
-      <ul id="taskList" class="task-list"></ul>
-    </div>
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+    import { getFirestore, doc, onSnapshot, updateDoc, arrayUnion, arrayRemove, getDoc, setDoc, collection, query, orderBy, getDocs, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    import { getStorage, ref, uploadBytes, getDownloadURL, listAll, deleteObject } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+    import * as THREE from 'three';
 
-    <!-- بطاقة الروابط المفيدة (ميزة إضافية تعاونية) -->
-    <div class="card">
-      <h2><i class="fas fa-link"></i> روابط تعاونية</h2>
-      <div class="link-input-group">
-        <input type="text" id="linkTitle" placeholder="العنوان (مثل: دروس يوتيوب)">
-        <input type="url" id="linkUrl" placeholder="الرابط https://...">
-        <button id="addLinkBtn"><i class="fas fa-save"></i> حفظ</button>
-      </div>
-      <ul id="linksList" class="links-list"></ul>
-    </div>
+    // تهيئة Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const storage = getStorage(app);
 
-    <!-- مؤقت بومودورو إضافي (غير متزامن لكن مفيد) -->
-    <div class="card timer-card">
-      <h2><i class="fas fa-hourglass-half"></i> مؤقت المذاكرة</h2>
-      <div class="timer-display" id="timerDisplay">25:00</div>
-      <div class="timer-buttons">
-        <button class="timer-btn" id="startTimer"><i class="fas fa-play"></i> ابدأ</button>
-        <button class="timer-btn" id="pauseTimer"><i class="fas fa-pause"></i> إيقاف</button>
-        <button class="timer-btn" id="resetTimer"><i class="fas fa-undo-alt"></i> إعادة</button>
-      </div>
-      <div class="status-text">⏱️ جلسة تركيز 25 دقيقة – ركّز ثم استرح</div>
-    </div>
-  </div>
+    // متغيرات عامة
+    let currentRoomId = null, currentRoomRef = null, unsubscribeRoom = null, unsubscribeChat = null;
+    let userId = "user_" + Math.random().toString(36).substring(2, 8);
+    let presenceInterval = null;
+    let quillEditor = null;
 
-  <footer>
-    <i class="fas fa-code"></i> Direct By Momen Aboud | 
-    <i class="fas fa-cloud-upload-alt"></i> متزامن مع Firebase Firestore – شارك الرابط مع صديقك
-  </footer>
-</div>
+    // عناصر DOM
+    const lobbyScreen = document.getElementById("lobbyScreen");
+    const roomScreen = document.getElementById("roomScreen");
+    const roomNameSpan = document.getElementById("roomNameDisplay");
+    const roomTierDisplay = document.getElementById("roomTierDisplay");
+    const exitBtn = document.getElementById("exitRoomBtn");
+    const taskInput = document.getElementById("taskInput");
+    const addTaskBtn = document.getElementById("addTaskBtn");
+    const taskListUl = document.getElementById("taskList");
+    const linkTitleInput = document.getElementById("linkTitle");
+    const linkUrlInput = document.getElementById("linkUrl");
+    const addLinkBtn = document.getElementById("addLinkBtn");
+    const linksListUl = document.getElementById("linksList");
+    const onlineListSpan = document.getElementById("onlineList");
+    const chatInput = document.getElementById("chatInput");
+    const sendChatBtn = document.getElementById("sendChatBtn");
+    const chatMessagesDiv = document.getElementById("chatMessages");
+    const fileUpload = document.getElementById("fileUpload");
+    const uploadFileBtn = document.getElementById("uploadFileBtn");
+    const fileListDiv = document.getElementById("fileList");
+    const badgesDiv = document.getElementById("badgesList");
+    const roomStatsDiv = document.getElementById("roomStats");
 
-<!-- Firebase SDK (مودرن) -->
-<script type="module">
-  // =================== قم باستبدال هذه البيانات ببيانات مشروعك من Firebase ===================
-  const firebaseConfig = {
-    apiKey: "AIzaSyDummyReplaceWithYourActualKey",
-    authDomain: "studybuddy-552bf.firebaseapp.com",
-    projectId: "studybuddy-552bf",
-    storageBucket: "studybuddy-552bf.appspot.com",
-    messagingSenderId: "123456789012",
-    appId: "1:123456789012:web:abc123def456"
-  };
-  // ======================================================================================
+    // ======================== Three.js خلفية ثلاثية الأبعاد ========================
+    const canvas = document.getElementById("three-bg");
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({ canvas, alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    // إضافة جسيمات متحركة
+    const particlesGeometry = new THREE.BufferGeometry();
+    const particlesCount = 1000;
+    const posArray = new Float32Array(particlesCount * 3);
+    for(let i = 0; i < particlesCount * 3; i += 3) {
+      posArray[i] = (Math.random() - 0.5) * 200;
+      posArray[i+1] = (Math.random() - 0.5) * 100;
+      posArray[i+2] = (Math.random() - 0.5) * 100 - 50;
+    }
+    particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+    const particlesMaterial = new THREE.PointsMaterial({ size: 0.3, color: 0x3b82f6 });
+    const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+    scene.add(particlesMesh);
+    camera.position.z = 30;
+    function animate() {
+      requestAnimationFrame(animate);
+      particlesMesh.rotation.y += 0.0005;
+      particlesMesh.rotation.x += 0.0003;
+      renderer.render(scene, camera);
+    }
+    animate();
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
 
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, doc, onSnapshot, updateDoc, arrayUnion, arrayRemove, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+    // ======================== دوال مساعدة ========================
+    function showToast(msg) {
+      let toast = document.createElement("div");
+      toast.innerText = msg;
+      toast.style.position = "fixed"; toast.style.bottom = "20px"; toast.style.left = "20px";
+      toast.style.background = "#1e293b"; toast.style.color = "white"; toast.style.padding = "12px 24px";
+      toast.style.borderRadius = "60px"; toast.style.zIndex = "9999";
+      document.body.appendChild(toast);
+      setTimeout(() => toast.remove(), 3000);
+    }
 
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  const studyDocRef = doc(db, "studySessions", "buddyRoom");
-
-  // عناصر DOM
-  const notesTextarea = document.getElementById("sharedNotes");
-  const taskInput = document.getElementById("taskInput");
-  const addTaskBtn = document.getElementById("addTaskBtn");
-  const taskListUl = document.getElementById("taskList");
-  const linkTitleInput = document.getElementById("linkTitle");
-  const linkUrlInput = document.getElementById("linkUrl");
-  const addLinkBtn = document.getElementById("addLinkBtn");
-  const linksListUl = document.getElementById("linksList");
-
-  let localUpdating = false;
-  let notesTimeout;
-
-  // ---- استماع حي من Firestore ----
-  onSnapshot(studyDocRef, async (docSnap) => {
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      // تحديث الملاحظات
-      const remoteNotes = data.notes || "";
-      if (!localUpdating && notesTextarea.value !== remoteNotes) {
-        notesTextarea.value = remoteNotes;
+    async function addPoints(roomRef, points) {
+      const snap = await getDoc(roomRef);
+      if (snap.exists()) {
+        let current = snap.data().totalPoints || 0;
+        await updateDoc(roomRef, { totalPoints: current + points });
+        showToast(`+${points} نقطة للغرفة!`);
+        await checkBadges(roomRef);
       }
-      // عرض المهام
-      const tasks = data.tasks || [];
-      renderTasks(tasks);
-      // عرض الروابط
-      const links = data.links || [];
-      renderLinks(links);
-    } else {
-      // إنشاء المستند لأول مرة
-      await setDoc(studyDocRef, {
-        notes: "🌟 مرحباً بكما في مساحة المذاكرة!\nاكتبا ملاحظاتكما معاً، وأضيفا مهام وروابط.",
-        tasks: [],
-        links: []
+    }
+
+    async function checkBadges(roomRef) {
+      const snap = await getDoc(roomRef);
+      if (!snap.exists()) return;
+      const points = snap.data().totalPoints || 0;
+      const tasks = snap.data().tasks || [];
+      const completedTasks = tasks.filter(t => t.done).length;
+      let badges = [];
+      if (completedTasks >= 5) badges.push("🏅 أول 5 مهام");
+      if (points >= 100) badges.push("⭐ 100 نقطة");
+      if (points >= 300) badges.push("🏆 300 نقطة");
+      await updateDoc(roomRef, { badges });
+      renderBadges(badges);
+    }
+
+    function renderBadges(badges) {
+      if (!badgesDiv) return;
+      badgesDiv.innerHTML = badges.map(b => `<span class="badge-icon" style="background:#f59e0b;" title="${b}">${b}</span>`).join(" ") || "لا توجد شارات بعد";
+    }
+
+    function getTier(points) {
+      if (points < 100) return { name: "برونزية 🥉", color: "#cd7f32" };
+      if (points < 300) return { name: "فضية 🥈", color: "#c0c0c0" };
+      if (points < 600) return { name: "ذهبية 🥇", color: "#ffd700" };
+      return { name: "أسطورية 🔥", color: "#ff4500" };
+    }
+
+    async function loadLeaderboard() {
+      const leaderDiv = document.getElementById("leaderboardList");
+      try {
+        const q = query(collection(db, "rooms"), orderBy("totalPoints", "desc"), limit(10));
+        const snap = await getDocs(q);
+        if (snap.empty) { leaderDiv.innerHTML = "لا توجد غرف"; return; }
+        let html = "";
+        let rank = 1;
+        snap.forEach(docSnap => {
+          let data = docSnap.data();
+          let tier = getTier(data.totalPoints || 0);
+          html += `<div class="leaderboard-item"><div><strong>${rank}</strong> ${data.roomName} <span class="room-tier">${tier.name}</span></div><div>⭐ ${data.totalPoints || 0}</div></div>`;
+          rank++;
+        });
+        leaderDiv.innerHTML = html;
+      } catch(e) { console.error(e); }
+    }
+
+    // وظائف الملفات
+    async function loadFiles() {
+      if (!currentRoomId) return;
+      const folderRef = ref(storage, `rooms/${currentRoomId}/`);
+      try {
+        const res = await listAll(folderRef);
+        fileListDiv.innerHTML = "";
+        for (let item of res.items) {
+          const url = await getDownloadURL(item);
+          fileListDiv.innerHTML += `<div class="file-item"><a href="${url}" target="_blank">${item.name}</a> <button class="delete-file" data-path="${item.fullPath}">حذف</button></div>`;
+        }
+        document.querySelectorAll(".delete-file").forEach(btn => {
+          btn.onclick = async () => {
+            const path = btn.dataset.path;
+            const fileRef = ref(storage, path);
+            await deleteObject(fileRef);
+            loadFiles();
+            showToast("تم حذف الملف");
+          };
+        });
+      } catch(e) { console.warn("No files"); }
+    }
+
+    async function uploadFiles(files) {
+      if (!currentRoomId) return;
+      for (let file of files) {
+        const fileRef = ref(storage, `rooms/${currentRoomId}/${Date.now()}_${file.name}`);
+        await uploadBytes(fileRef, file);
+        showToast(`تم رفع ${file.name}`);
+      }
+      loadFiles();
+    }
+
+    // عرض المهام مع أزرار
+    function renderTasks(tasks) {
+      taskListUl.innerHTML = "";
+      if (!tasks.length) { taskListUl.innerHTML = "<div style='padding:0.5rem;'>لا مهام</div>"; return; }
+      tasks.forEach(task => {
+        const li = document.createElement("li");
+        li.style.display = "flex"; li.style.justifyContent = "space-between"; li.style.margin = "0.5rem 0";
+        li.innerHTML = `<span style="${task.done ? 'text-decoration:line-through;opacity:0.7;' : ''}">${escapeHtml(task.text)}</span>
+          <div>
+            <button class="complete-task" data-id="${task.id}" style="background:#10b981; margin-left:0.3rem;">${task.done ? 'تراجع' : '✔️'}</button>
+            <button class="delete-task" data-id="${task.id}" style="background:#ef4444;">🗑️</button>
+          </div>`;
+        taskListUl.appendChild(li);
+      });
+      document.querySelectorAll(".complete-task").forEach(btn => {
+        btn.onclick = async () => {
+          const id = parseInt(btn.dataset.id);
+          const snap = await getDoc(currentRoomRef);
+          if (snap.exists()) {
+            let tasksArr = snap.data().tasks || [];
+            let task = tasksArr.find(t => t.id === id);
+            let newDone = !task.done;
+            let updated = tasksArr.map(t => t.id === id ? { ...t, done: newDone } : t);
+            await updateDoc(currentRoomRef, { tasks: updated });
+            if (newDone && !task.done) {
+              await addPoints(currentRoomRef, 10);
+              await updateRoomStats();
+            }
+          }
+        };
+      });
+      document.querySelectorAll(".delete-task").forEach(btn => {
+        btn.onclick = async () => {
+          const id = parseInt(btn.dataset.id);
+          const snap = await getDoc(currentRoomRef);
+          if (snap.exists()) {
+            let tasksArr = snap.data().tasks || [];
+            let filtered = tasksArr.filter(t => t.id !== id);
+            await updateDoc(currentRoomRef, { tasks: filtered });
+          }
+        };
       });
     }
-  });
 
-  // حفظ الملاحظات عند الكتابة (debounce)
-  notesTextarea.addEventListener("input", (e) => {
-    clearTimeout(notesTimeout);
-    notesTimeout = setTimeout(async () => {
-      localUpdating = true;
-      try {
-        await updateDoc(studyDocRef, { notes: e.target.value });
-      } catch(err) { console.warn(err); }
-      localUpdating = false;
-    }, 500);
-  });
-
-  // --- دوال المهام ---
-  async function addTask(text) {
-    if (!text.trim()) return;
-    const newTask = { id: Date.now(), text: text.trim(), done: false };
-    await updateDoc(studyDocRef, { tasks: arrayUnion(newTask) });
-  }
-  async function toggleTask(taskId, currentDone) {
-    const snap = await getDoc(studyDocRef);
-    if (snap.exists()) {
-      let tasks = snap.data().tasks || [];
-      const updated = tasks.map(t => t.id === taskId ? { ...t, done: !t.done } : t);
-      await updateDoc(studyDocRef, { tasks: updated });
-    }
-  }
-  async function deleteTask(taskId) {
-    const snap = await getDoc(studyDocRef);
-    if (snap.exists()) {
-      let tasks = snap.data().tasks || [];
-      const filtered = tasks.filter(t => t.id !== taskId);
-      await updateDoc(studyDocRef, { tasks: filtered });
-    }
-  }
-  function renderTasks(tasks) {
-    taskListUl.innerHTML = "";
-    if (!tasks.length) {
-      taskListUl.innerHTML = '<div style="text-align:center; color:gray; padding:20px;">✨ لا مهام حالياً، أضف مهمة جديدة</div>';
-      return;
-    }
-    tasks.forEach(task => {
-      const li = document.createElement("li");
-      li.className = "task-item";
-      const checkSpan = document.createElement("span");
-      checkSpan.innerHTML = task.done ? "✅" : "◻️";
-      checkSpan.style.cursor = "pointer";
-      checkSpan.style.fontSize = "1.4rem";
-      checkSpan.onclick = () => toggleTask(task.id, task.done);
-      const textSpan = document.createElement("span");
-      textSpan.className = `task-text ${task.done ? "completed" : ""}`;
-      textSpan.textContent = task.text;
-      const delBtn = document.createElement("button");
-      delBtn.innerHTML = "<i class='fas fa-trash-alt'></i>";
-      delBtn.className = "delete-btn";
-      delBtn.onclick = () => deleteTask(task.id);
-      li.appendChild(checkSpan);
-      li.appendChild(textSpan);
-      li.appendChild(delBtn);
-      taskListUl.appendChild(li);
-    });
-  }
-  addTaskBtn.addEventListener("click", () => {
-    addTask(taskInput.value);
-    taskInput.value = "";
-  });
-  taskInput.addEventListener("keypress", (e) => {
-    if (e.key === "Enter") addTask(taskInput.value), taskInput.value = "";
-  });
-
-  // --- دوال الروابط التعاونية ---
-  async function addLink(title, url) {
-    if (!title.trim() || !url.trim()) return;
-    const newLink = { id: Date.now(), title: title.trim(), url: url.trim() };
-    await updateDoc(studyDocRef, { links: arrayUnion(newLink) });
-  }
-  async function deleteLink(linkId) {
-    const snap = await getDoc(studyDocRef);
-    if (snap.exists()) {
-      let links = snap.data().links || [];
-      const filtered = links.filter(l => l.id !== linkId);
-      await updateDoc(studyDocRef, { links: filtered });
-    }
-  }
-  function renderLinks(links) {
-    linksListUl.innerHTML = "";
-    if (!links.length) {
-      linksListUl.innerHTML = '<div style="text-align:center; color:gray; padding:20px;">🔗 لا روابط حالياً، أضف رابطاً مفيداً</div>';
-      return;
-    }
-    links.forEach(link => {
-      const li = document.createElement("li");
-      li.className = "link-item";
-      const infoDiv = document.createElement("div");
-      infoDiv.className = "link-url";
-      infoDiv.innerHTML = `<strong>${escapeHtml(link.title)}</strong><br><a href="${link.url}" target="_blank">${link.url.substring(0, 50)}${link.url.length>50 ? '...' : ''}</a>`;
-      const delBtn = document.createElement("button");
-      delBtn.innerHTML = "<i class='fas fa-times'></i>";
-      delBtn.className = "delete-btn";
-      delBtn.onclick = () => deleteLink(link.id);
-      li.appendChild(infoDiv);
-      li.appendChild(delBtn);
-      linksListUl.appendChild(li);
-    });
-  }
-  function escapeHtml(str) {
-    return str.replace(/[&<>]/g, function(m) {
-      if (m === '&') return '&amp;';
-      if (m === '<') return '&lt;';
-      if (m === '>') return '&gt;';
-      return m;
-    });
-  }
-  addLinkBtn.addEventListener("click", () => {
-    addLink(linkTitleInput.value, linkUrlInput.value);
-    linkTitleInput.value = "";
-    linkUrlInput.value = "";
-  });
-
-  // =============== مؤقت بومودورو (إضافة محلية رائعة) ===============
-  let timerInterval;
-  let timeLeft = 25 * 60; // 25 دقيقة بالثواني
-  let isRunning = false;
-  const timerDisplay = document.getElementById("timerDisplay");
-  function updateTimerUI() {
-    const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
-    timerDisplay.textContent = `${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}`;
-  }
-  function startTimer() {
-    if (isRunning) return;
-    isRunning = true;
-    timerInterval = setInterval(() => {
-      if (timeLeft <= 0) {
-        clearInterval(timerInterval);
-        isRunning = false;
-        alert("⏰ انتهت جلسة المذاكرة! حان وقت استراحة قصيرة.");
-        timeLeft = 25 * 60;
-        updateTimerUI();
-      } else {
-        timeLeft--;
-        updateTimerUI();
+    async function updateRoomStats() {
+      if (!currentRoomRef) return;
+      const snap = await getDoc(currentRoomRef);
+      if (snap.exists()) {
+        const tasks = snap.data().tasks || [];
+        const completed = tasks.filter(t => t.done).length;
+        const points = snap.data().totalPoints || 0;
+        roomStatsDiv.innerHTML = `المهام المكتملة: ${completed} | النقاط: ${points}`;
       }
-    }, 1000);
-  }
-  function pauseTimer() {
-    clearInterval(timerInterval);
-    isRunning = false;
-  }
-  function resetTimer() {
-    pauseTimer();
-    timeLeft = 25 * 60;
+    }
+
+    // عرض الروابط مع معاينة بسيطة
+    async function renderLinks(links) {
+      linksListUl.innerHTML = "";
+      if (!links.length) { linksListUl.innerHTML = "<div>لا روابط</div>"; return; }
+      for (let link of links) {
+        const domain = new URL(link.url).hostname;
+        const favicon = `https://www.google.com/s2/favicons?domain=${domain}&sz=32`;
+        linksListUl.innerHTML += `<div class="file-item"><img src="${favicon}" width="20" style="margin-left:0.5rem;"><a href="${link.url}" target="_blank">${escapeHtml(link.title)}</a><button class="delete-link" data-id="${link.id}">حذف</button></div>`;
+      }
+      document.querySelectorAll(".delete-link").forEach(btn => {
+        btn.onclick = async () => {
+          const id = parseInt(btn.dataset.id);
+          const snap = await getDoc(currentRoomRef);
+          if (snap.exists()) {
+            let linksArr = snap.data().links || [];
+            let filtered = linksArr.filter(l => l.id !== id);
+            await updateDoc(currentRoomRef, { links: filtered });
+          }
+        };
+      });
+    }
+
+    // إدارة الدردشة
+    async function sendChatMessage(text) {
+      if (!text.trim() || !currentRoomRef) return;
+      const chatRef = collection(db, "rooms", currentRoomId, "chats");
+      await setDoc(doc(chatRef), { userId, message: text.trim(), timestamp: new Date() });
+    }
+    function renderChatMessage(msg) {
+      const div = document.createElement("div");
+      div.className = "chat-message";
+      div.innerHTML = `<strong>${msg.userId}</strong>: ${escapeHtml(msg.message)}`;
+      chatMessagesDiv.appendChild(div);
+      chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
+    }
+
+    // التواجد
+    async function updatePresence(roomId, isActive) {
+      const presenceRef = doc(db, "presence", roomId);
+      const snap = await getDoc(presenceRef);
+      let users = snap.exists() ? snap.data().users : [];
+      if (isActive) { if (!users.includes(userId)) users.push(userId); }
+      else { users = users.filter(u => u !== userId); }
+      await setDoc(presenceRef, { users, lastUpdate: new Date() });
+    }
+    async function getOnlineUsers(roomId) {
+      const presenceRef = doc(db, "presence", roomId);
+      const snap = await getDoc(presenceRef);
+      return snap.exists() ? snap.data().users : [];
+    }
+
+    // إنشاء غرفة
+    async function createRoom(roomName) {
+      if (!roomName.trim()) return alert("أدخل اسم الغرفة");
+      const roomId = Math.random().toString(36).substring(2, 8);
+      const roomRef = doc(db, "rooms", roomId);
+      await setDoc(roomRef, {
+        roomName: roomName.trim(),
+        createdAt: new Date(),
+        totalPoints: 0,
+        notes: "<p>مرحباً بكم في الغرفة المتطورة!</p>",
+        tasks: [],
+        links: [],
+        badges: []
+      });
+      alert(`تم الإنشاء! معرف الغرفة: ${roomId}`);
+      joinRoom(roomId);
+    }
+
+    // الانضمام
+    async function joinRoom(roomId) {
+      const roomRef = doc(db, "rooms", roomId);
+      const snap = await getDoc(roomRef);
+      if (!snap.exists()) { alert("معرف غير صحيح"); return; }
+      if (unsubscribeRoom) unsubscribeRoom();
+      if (unsubscribeChat) unsubscribeChat();
+      currentRoomId = roomId;
+      currentRoomRef = roomRef;
+      lobbyScreen.style.display = "none";
+      roomScreen.style.display = "block";
+      roomNameSpan.textContent = snap.data().roomName;
+      const tier = getTier(snap.data().totalPoints || 0);
+      roomTierDisplay.textContent = tier.name;
+      await updatePresence(roomId, true);
+      if (presenceInterval) clearInterval(presenceInterval);
+      presenceInterval = setInterval(() => updatePresence(roomId, true), 20000);
+      const updateOnline = async () => {
+        const users = await getOnlineUsers(roomId);
+        onlineListSpan.innerHTML = users.map(u => `<span style="background:#22c55e; padding:0 0.5rem; border-radius:1rem;">${u}</span>`).join(" ");
+      };
+      updateOnline();
+      const onlineInterval = setInterval(updateOnline, 5000);
+      // محرر Quill
+      if (quillEditor) quillEditor.destroy();
+      quillEditor = new Quill('#quill-editor', { theme: 'snow', dir: 'rtl', placeholder: 'اكتب ملاحظات متقدمة...' });
+      // استماع للتغييرات في المحرر مع debounce
+      let quillTimeout;
+      quillEditor.on('text-change', () => {
+        clearTimeout(quillTimeout);
+        quillTimeout = setTimeout(async () => {
+          if (currentRoomRef) await updateDoc(currentRoomRef, { notes: quillEditor.root.innerHTML });
+        }, 1000);
+      });
+      // استماع للغرفة
+      unsubscribeRoom = onSnapshot(roomRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          if (quillEditor && quillEditor.root.innerHTML !== data.notes) quillEditor.root.innerHTML = data.notes;
+          renderTasks(data.tasks || []);
+          renderLinks(data.links || []);
+          const newTier = getTier(data.totalPoints || 0);
+          roomTierDisplay.textContent = newTier.name;
+          renderBadges(data.badges || []);
+          updateRoomStats();
+        }
+      });
+      // استماع للدردشة
+      const chatQuery = query(collection(db, "rooms", roomId, "chats"), orderBy("timestamp", "asc"), limit(100));
+      unsubscribeChat = onSnapshot(chatQuery, (snapshot) => {
+        chatMessagesDiv.innerHTML = "";
+        snapshot.forEach(doc => renderChatMessage(doc.data()));
+      });
+      loadFiles();
+      window.cleanupRoom = () => {
+        clearInterval(onlineInterval);
+        if (presenceInterval) clearInterval(presenceInterval);
+        updatePresence(roomId, false);
+        if (unsubscribeRoom) unsubscribeRoom();
+        if (unsubscribeChat) unsubscribeChat();
+        if (quillEditor) quillEditor.destroy();
+      };
+    }
+
+    function exitRoom() {
+      if (window.cleanupRoom) window.cleanupRoom();
+      currentRoomId = null; currentRoomRef = null;
+      roomScreen.style.display = "none";
+      lobbyScreen.style.display = "block";
+      loadLeaderboard();
+    }
+
+    // مؤقت بومودورو
+    let timerIntervalId, timeLeft = 25*60, isTimerRunning = false;
+    const timerDisplay = document.getElementById("timerDisplay");
+    function updateTimerUI() { let m = Math.floor(timeLeft/60), s = timeLeft%60; timerDisplay.textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
+    function startTimer() { if (isTimerRunning) return; isTimerRunning=true; timerIntervalId=setInterval(()=>{ if(timeLeft<=0){ clearInterval(timerIntervalId); isTimerRunning=false; alert("🎉 أكملتم جلسة تركيز! +50 نقطة"); if(currentRoomRef) addPoints(currentRoomRef,50); timeLeft=25*60; updateTimerUI(); } else { timeLeft--; updateTimerUI(); } },1000); }
+    function pauseTimer() { clearInterval(timerIntervalId); isTimerRunning=false; }
+    function resetTimer() { pauseTimer(); timeLeft=25*60; updateTimerUI(); }
+    document.getElementById("startTimer")?.addEventListener("click", startTimer);
+    document.getElementById("pauseTimer")?.addEventListener("click", pauseTimer);
+    document.getElementById("resetTimer")?.addEventListener("click", resetTimer);
     updateTimerUI();
-  }
-  document.getElementById("startTimer").addEventListener("click", startTimer);
-  document.getElementById("pauseTimer").addEventListener("click", pauseTimer);
-  document.getElementById("resetTimer").addEventListener("click", resetTimer);
-  updateTimerUI();
-</script>
+
+    // أحداث الأزرار
+    document.getElementById("createRoomBtn").onclick = () => createRoom(document.getElementById("newRoomName").value);
+    document.getElementById("joinRoomBtn").onclick = () => joinRoom(document.getElementById("joinRoomId").value);
+    exitBtn.onclick = exitRoom;
+    addTaskBtn.onclick = async () => {
+      const text = taskInput.value.trim();
+      if (!text || !currentRoomRef) return;
+      const newTask = { id: Date.now(), text, done: false };
+      await updateDoc(currentRoomRef, { tasks: arrayUnion(newTask) });
+      taskInput.value = "";
+      showToast("تم إضافة المهمة");
+    };
+    addLinkBtn.onclick = async () => {
+      const title = linkTitleInput.value.trim(), url = linkUrlInput.value.trim();
+      if (!title || !url || !currentRoomRef) return;
+      const newLink = { id: Date.now(), title, url };
+      await updateDoc(currentRoomRef, { links: arrayUnion(newLink) });
+      linkTitleInput.value = ""; linkUrlInput.value = "";
+      showToast("تم إضافة الرابط");
+    };
+    sendChatBtn.onclick = async () => { await sendChatMessage(chatInput.value); chatInput.value = ""; };
+    chatInput.addEventListener("keypress", (e) => { if(e.key === "Enter") sendChatBtn.click(); });
+    uploadFileBtn.onclick = () => { if (fileUpload.files.length) uploadFiles(Array.from(fileUpload.files)); else showToast("اختر ملفات"); };
+
+    function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+
+    // الوضع الداكن
+    const darkBtn = document.getElementById("darkModeBtn");
+    darkBtn?.addEventListener("click", () => {
+      document.body.classList.toggle("light");
+      localStorage.setItem("theme", document.body.classList.contains("light") ? "light" : "dark");
+    });
+    if (localStorage.getItem("theme") === "light") document.body.classList.add("light");
+
+    loadLeaderboard();
+  </script>
 </body>
 </html>
