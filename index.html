@@ -3,12 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>رفيق الدراسة ULTRA+ | النسخة النهائية الكاملة</title>
+  <title>رفيق الدراسة ULTRA+ | نسخ معرف الغرفة</title>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
-  <!-- Quill JS (مهم جداً) -->
   <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
   <script type="importmap">
     { "imports": { "three": "https://unpkg.com/three@0.128.0/build/three.module.js" } }
@@ -100,12 +99,54 @@
     .online-badge { background: #22c55e; padding: 0.1rem 0.6rem; border-radius: 1rem; margin-left: 0.3rem; }
     footer { text-align: center; margin-top: 2.5rem; opacity: 0.8; }
     @media (max-width: 850px) { .dashboard { grid-template-columns: 1fr; } .hero { flex-direction: column; text-align: center; } }
+    
+    /* نافذة نسخ المعرف */
+    .copy-dialog {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #1e293b;
+      padding: 1.5rem;
+      border-radius: 2rem;
+      z-index: 10000;
+      box-shadow: 0 25px 50px -12px black;
+      text-align: center;
+      backdrop-filter: blur(20px);
+      border: 1px solid #38bdf8;
+      width: 300px;
+    }
+    body.light .copy-dialog {
+      background: white;
+      color: #0f172a;
+    }
+    .copy-dialog input {
+      width: 100%;
+      padding: 0.5rem;
+      margin: 1rem 0;
+      border-radius: 2rem;
+      border: none;
+      text-align: center;
+      font-size: 1.2rem;
+      font-family: monospace;
+    }
+    .copy-dialog button {
+      margin: 0 0.5rem;
+    }
+    .dialog-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.7);
+      z-index: 9999;
+    }
   </style>
 </head>
 <body>
   <canvas id="three-canvas"></canvas>
   <div class="container">
-    <!-- شاشة البهو -->
     <div id="lobbyScreen">
       <div class="hero glass">
         <div class="title"><h1><i class="fas fa-gem"></i> رفيق الدراسة ULTRA+</h1><div>غرف ذكية | شات | ملفات | ثلاثي الأبعاد | شارات</div></div>
@@ -116,11 +157,16 @@
         <div class="card glass"><h2><i class="fas fa-sign-in-alt"></i> انضم إلى غرفة</h2><input type="text" id="joinRoomId" placeholder="معرف الغرفة" style="width:100%; padding:0.8rem; border-radius:2rem;"><button id="joinRoomBtn" style="margin-top:1rem; width:100%;">دخول</button></div>
         <div class="card glass"><h2><i class="fas fa-trophy"></i> أفضل الغروف (نقاط)</h2><div id="leaderboardList">جاري التحميل...</div></div>
       </div>
-      <footer>✨ Direct By Momen Aboud – النسخة النهائية 100% ✨</footer>
+      <footer>✨ Direct By Momen Aboud – مع إمكانية نسخ معرف الغرفة ✨</footer>
     </div>
-    <!-- شاشة الغرفة الداخلية -->
     <div id="roomScreen" style="display: none;">
-      <div class="hero glass"><div class="title"><h1><i class="fas fa-chalkboard-user"></i> غرفة: <span id="roomNameDisplay">---</span> <span id="roomTierDisplay" class="room-tier"></span></h1></div><button id="exitRoomBtn" style="background:#ef4444;">خروج <i class="fas fa-sign-out-alt"></i></button></div>
+      <div class="hero glass">
+        <div class="title"><h1><i class="fas fa-chalkboard-user"></i> غرفة: <span id="roomNameDisplay">---</span> <span id="roomTierDisplay" class="room-tier"></span></h1></div>
+        <div style="display: flex; gap: 0.5rem;">
+          <button id="copyRoomIdHeaderBtn" style="background:#475569;">📋 نسخ المعرف</button>
+          <button id="exitRoomBtn" style="background:#ef4444;">خروج <i class="fas fa-sign-out-alt"></i></button>
+        </div>
+      </div>
       <div class="dashboard">
         <div class="card glass"><h2><i class="fas fa-edit"></i> ملاحظات متطورة</h2><div id="quill-editor"></div><h2><i class="fas fa-comments"></i> دردشة فورية</h2><div id="chatMessages" class="chat-container"></div><div style="display: flex; gap: 0.5rem;"><input type="text" id="chatInput" placeholder="رسالتك..." style="flex:1; border-radius:2rem; padding:0.6rem;"><button id="sendChatBtn"><i class="fas fa-paper-plane"></i></button></div><div class="online-users" style="margin-top:0.7rem;">🟢 المتصلون: <span id="onlineList">-</span></div></div>
         <div class="card glass"><h2><i class="fas fa-tasks"></i> المهام (+10 نقاط)</h2><div style="display: flex; gap: 0.5rem;"><input type="text" id="taskInput" placeholder="مهمة جديدة" style="flex:1;"><button id="addTaskBtn">إضافة</button></div><button id="refreshTasksBtn" style="background:#475569; margin-top:0.5rem; width:100%;">🔄 تحديث المهام يدوياً</button><ul id="taskList" class="task-list" style="margin-top:0.8rem;"></ul><h2><i class="fas fa-cloud-upload-alt"></i> ملفات الغرفة</h2><input type="file" id="fileUpload" multiple accept="image/*,application/pdf"><button id="uploadFileBtn" style="margin-top:0.5rem;">رفع الملفات</button><div id="fileList" class="file-list" style="margin-top:0.8rem;"></div><h2><i class="fas fa-medal"></i> شارات الإنجازات</h2><div id="badgesList" style="display: flex; gap: 0.5rem; flex-wrap: wrap;"></div></div>
@@ -179,8 +225,9 @@
     const badgesDiv = document.getElementById("badgesList");
     const roomStatsDiv = document.getElementById("roomStats");
     const refreshTasksBtn = document.getElementById("refreshTasksBtn");
+    const copyRoomIdHeaderBtn = document.getElementById("copyRoomIdHeaderBtn");
 
-    // ========== Three.js ==========
+    // Three.js background
     const canvas = document.getElementById("three-canvas");
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -262,7 +309,7 @@
       } catch(err) { console.error(err); }
     }
 
-    // ========== المهام (مع تحديث فوري) ==========
+    // المهام
     function renderTasks(tasks) {
       localTasks = tasks || [];
       if (!taskListUl) return;
@@ -362,7 +409,7 @@
       }
     }
 
-    // ========== الروابط ==========
+    // الروابط
     async function renderLinks(links) {
       if (!linksListUl) return;
       linksListUl.innerHTML = "";
@@ -390,7 +437,7 @@
       });
     }
 
-    // ========== الملفات ==========
+    // الملفات
     async function loadFiles() {
       if (!currentRoomId) return;
       const folderRef = ref(storage, `rooms/${currentRoomId}/`);
@@ -426,7 +473,7 @@
       loadFiles();
     }
 
-    // ========== الدردشة ==========
+    // الدردشة
     async function sendChatMessage(text) {
       if (!text.trim() || !currentRoomRef) return;
       const chatRef = collection(db, "rooms", currentRoomId, "chats");
@@ -441,7 +488,7 @@
       chatMessagesDiv.scrollTop = chatMessagesDiv.scrollHeight;
     }
 
-    // ========== التواجد ==========
+    // التواجد
     async function updatePresence(roomId, isActive) {
       const presenceRef = doc(db, "presence", roomId);
       const snap = await getDoc(presenceRef);
@@ -457,7 +504,7 @@
       return snap.exists() ? snap.data().users : [];
     }
 
-    // ========== إنشاء غرفة ==========
+    // إنشاء غرفة مع نافذة نسخ مخصصة
     async function createRoom(roomName) {
       if (!roomName.trim()) return showToast("أدخل اسم الغرفة", "error");
       const roomId = Math.random().toString(36).substring(2, 8);
@@ -471,11 +518,42 @@
         links: [],
         badges: []
       });
-      showToast(`تم الإنشاء! معرف الغرفة: ${roomId}`);
-      joinRoom(roomId);
+      showCopyDialog(roomId);
     }
 
-    // ========== الانضمام إلى غرفة ==========
+    function showCopyDialog(roomId) {
+      const existingOverlay = document.querySelector('.dialog-overlay');
+      if (existingOverlay) existingOverlay.remove();
+      
+      const overlay = document.createElement('div');
+      overlay.className = 'dialog-overlay';
+      const dialog = document.createElement('div');
+      dialog.className = 'copy-dialog';
+      dialog.innerHTML = `
+        <h3>✅ تم إنشاء الغرفة</h3>
+        <p>معرف الغرفة (انسخه وشاركه مع أصدقائك):</p>
+        <input type="text" id="roomIdInput" value="${roomId}" readonly>
+        <div>
+          <button id="copyRoomIdBtn" style="background:#3b82f6;">📋 نسخ</button>
+          <button id="enterRoomBtn" style="background:#10b981;">🚪 دخول الغرفة</button>
+        </div>
+      `;
+      overlay.appendChild(dialog);
+      document.body.appendChild(overlay);
+      
+      document.getElementById('copyRoomIdBtn').onclick = () => {
+        const input = document.getElementById('roomIdInput');
+        input.select();
+        document.execCommand('copy');
+        showToast("تم نسخ معرف الغرفة!");
+      };
+      document.getElementById('enterRoomBtn').onclick = () => {
+        overlay.remove();
+        joinRoom(roomId);
+      };
+    }
+
+    // الانضمام إلى غرفة
     async function joinRoom(roomId) {
       const roomRef = doc(db, "rooms", roomId);
       const snap = await getDoc(roomRef);
@@ -546,7 +624,7 @@
       loadLeaderboard();
     }
 
-    // ========== مؤقت بومودورو ==========
+    // مؤقت بومودورو
     let timerIntervalId, timeLeft = 25 * 60, isTimerRunning = false;
     const timerDisplay = document.getElementById("timerDisplay");
     function updateTimerUI() { const m = Math.floor(timeLeft/60), s = timeLeft%60; timerDisplay.textContent = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
@@ -558,7 +636,7 @@
     document.getElementById("resetTimer")?.addEventListener("click", resetTimer);
     updateTimerUI();
 
-    // ========== ربط الأزرار ==========
+    // ربط الأزرار
     document.getElementById("createRoomBtn").onclick = () => createRoom(document.getElementById("newRoomName").value);
     document.getElementById("joinRoomBtn").onclick = () => joinRoom(document.getElementById("joinRoomId").value);
     exitBtn.onclick = exitRoom;
@@ -575,6 +653,14 @@
     sendChatBtn.onclick = async () => { await sendChatMessage(chatInput.value); chatInput.value = ""; };
     chatInput.addEventListener("keypress", (e) => { if (e.key === "Enter") sendChatBtn.click(); });
     uploadFileBtn.onclick = () => { if (fileUpload.files.length) uploadFiles(Array.from(fileUpload.files)); else showToast("اختر ملفات", "error"); };
+    if (copyRoomIdHeaderBtn) {
+      copyRoomIdHeaderBtn.onclick = () => {
+        if (currentRoomId) {
+          navigator.clipboard.writeText(currentRoomId);
+          showToast("تم نسخ معرف الغرفة: " + currentRoomId);
+        }
+      };
+    }
 
     function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){ if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
 
